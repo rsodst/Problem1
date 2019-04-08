@@ -18,7 +18,8 @@ import Shared.ValueDescription;
 
 public class Tests {
 
-	private float CalcResultBashkortostan() throws Exception {
+	@Test
+	public void CalcResultForBashkortostanForMotorBike() throws Exception {
 		OsagoCalculatorService osagoCalculatorService = new OsagoCalculatorService();
 
 		VehicleDescription vehicle = new VehicleDescription();
@@ -26,7 +27,7 @@ public class Tests {
 
 		vehicle.EnginePower = EnginePowerEnum.From71To100;
 		vehicle.VehicleRegistrationCountry = VehicleRegistrationCountryEnum.Russia;
-		vehicle.VehicleType = VehicleTypeEnum.Cars;
+		vehicle.VehicleType = VehicleTypeEnum.MotorcyclesAndScooters;
 
 		owner.AreaId = 1;
 		owner.RegionId = 1;
@@ -41,11 +42,17 @@ public class Tests {
 
 		float result = osagoCalculatorService.Calc(vehicle, owner);
 
-		return result;
+		boolean hasError = false;
+
+		if (Math.round(result) != 3643) {
+			hasError = true;
+		}
+
+		Assert.assertEquals(hasError, false);
 	}
 
 	@Test
-	public void CompareWithOnlineCalculatorValue_Tinkoff() throws Exception {
+	public void CalcResultForBashkortostanForMotorBikeAndCompareWithTinkoff() throws Exception {
 		OsagoCalculatorService osagoCalculatorService = new OsagoCalculatorService();
 
 		VehicleDescription vehicle = new VehicleDescription();
@@ -78,7 +85,7 @@ public class Tests {
 	}
 
 	@Test
-	public void CheckThatValueIncludeToAllowedInterval() throws Exception {
+	public void CheckBehaviourInOutOFRangeCoef() throws Exception {
 		OsagoCalculatorService osagoCalculatorService = new OsagoCalculatorService();
 
 		VehicleDescription vehicle = new VehicleDescription();
@@ -93,7 +100,7 @@ public class Tests {
 
 		owner.BonusMalusRate = BonusMalusEnum._1;
 
-		owner.DriverDescription = new DriverDescription(22, 3);
+		owner.DriverDescription = new DriverDescription(25, 19);
 
 		owner.InsurancePeriod = InsurancePeriodEnum._9Month;
 		owner.PersonsAllowedToDrive = PersonsAllowedToDriveEnum.AnyDrivers;
@@ -101,11 +108,42 @@ public class Tests {
 
 		float result = osagoCalculatorService.Calc(vehicle, owner);
 
-		System.out.print(result);
+		boolean hasError = false;
+
+		if (Math.round(result) != 11122) {
+			hasError = true;
+		}
+
+		Assert.assertEquals(hasError, false);
+	}
+	
+	@Test
+	public void CalcResultForBashkortostanForCar() throws Exception {
+		OsagoCalculatorService osagoCalculatorService = new OsagoCalculatorService();
+
+		VehicleDescription vehicle = new VehicleDescription();
+		OwnerDescription owner = new OwnerDescription();
+
+		vehicle.EnginePower = EnginePowerEnum.From71To100;
+		vehicle.VehicleRegistrationCountry = VehicleRegistrationCountryEnum.Russia;
+		vehicle.VehicleType = VehicleTypeEnum.Cars;
+
+		owner.AreaId = 1;
+		owner.RegionId = 1;
+
+		owner.BonusMalusRate = BonusMalusEnum._1;
+
+		owner.DriverDescription = new DriverDescription(20, 3);
+
+		owner.InsurancePeriod = InsurancePeriodEnum._9Month;
+		owner.PersonsAllowedToDrive = PersonsAllowedToDriveEnum.AnyDrivers;
+		owner.VehicleOwnerType = VehicleOwnerTypeEnum.Individual;
+
+		float result = osagoCalculatorService.Calc(vehicle, owner);
 
 		boolean hasError = false;
 
-		if (result != (float) 11122.24) {
+		if (Math.round(result) == 5937) {
 			hasError = true;
 		}
 
