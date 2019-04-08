@@ -50,4 +50,37 @@ public class Tests {
 
 		Assert.assertEquals(hasError, false);
 	}
+
+	@Test
+	public void CheckBehaviourInOutOFRangeCoef() throws Exception {
+		OsagoCalculatorService osagoCalculatorService = new OsagoCalculatorService();
+
+		VehicleDescription vehicle = new VehicleDescription();
+		OwnerDescription owner = new OwnerDescription();
+
+		vehicle.EnginePower = EnginePowerEnum.From71To100;
+		vehicle.VehicleRegistrationCountry = VehicleRegistrationCountryEnum.Russia;
+		vehicle.VehicleType = VehicleTypeEnum.Cars;
+
+		owner.AreaId = 1;
+		owner.RegionId = 1;
+
+		owner.BonusMalusRate = BonusMalusEnum._1;
+
+		owner.DriverDescription = new DriverDescription(25, 19);
+
+		owner.InsurancePeriod = InsurancePeriodEnum._9Month;
+		owner.PersonsAllowedToDrive = PersonsAllowedToDriveEnum.AnyDrivers;
+		owner.VehicleOwnerType = VehicleOwnerTypeEnum.Individual;
+
+		float result = osagoCalculatorService.Calc(vehicle, owner);
+
+		boolean hasError = false;
+
+		if (Math.round(result) != 11122) {
+			hasError = true;
+		}
+
+		Assert.assertEquals(hasError, false);
+	}
 }
